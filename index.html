@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fratelli Studio Automotivo | Estética de Elite</title>
     
-    <!-- Fonts -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     
-    <!-- Scripts Necessários (Ordem Importa) -->
+    <!-- Tailwind CSS para agilizar o layout -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Lucide Icons (Versão estável para JS puro) -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 
     <script>
         tailwind.config = {
@@ -24,38 +22,23 @@
                 extend: {
                     colors: {
                         'racing-red': '#990000',
-                        'metallic-silver': '#D1D1D1',
-                        'pure-white': '#FFFFFF',
-                        'deep-black': '#0A0A0A', // Levemente mais claro que o preto absoluto
+                        'deep-black': '#0A0A0A',
                         'dark-gray': '#151515',
+                        'metallic-silver': '#D1D1D1',
                         'whatsapp-green': '#25D366',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         display: ['Space Grotesk', 'sans-serif'],
-                    },
-                    animation: {
-                        'slow-zoom': 'slow-zoom 20s infinite alternate',
-                    },
-                    keyframes: {
-                        'slow-zoom': {
-                            '0%': { transform: 'scale(1)' },
-                            '100%': { transform: 'scale(1.1)' },
-                        }
                     }
                 }
             }
         }
     </script>
 
-    <style type="text/css">
-        /* Prevenção de tela preta infinita */
-        body {
-            background-color: #0f0f0f;
-            margin: 0;
-            color: #D1D1D1;
-            font-family: 'Inter', sans-serif;
-        }
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #0A0A0A; color: #D1D1D1; overflow-x: hidden; }
 
         .shiny-text {
             background: linear-gradient(to bottom, #FFFFFF 0%, #BDBDBD 50%, #FFFFFF 100%);
@@ -63,225 +46,215 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0a0a0a;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #990000;
-            border-radius: 10px;
+        .hero-zoom {
+            animation: slow-zoom 20s infinite alternate;
         }
 
-        html {
-            scroll-behavior: smooth;
+        @keyframes slow-zoom {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
         }
 
-        /* Estilo para evitar o "pulo" de carregamento do React */
-        #root:empty {
-            height: 100vh;
-            display: flex;
+        /* Efeito de revelação ao rolar a página */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #0A0A0A;
+            z-index: 100;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #000;
-        }
-        #root:empty::after {
-            content: "FRATELLI";
-            color: #990000;
-            font-family: 'Space Grotesk';
-            font-weight: bold;
-            letter-spacing: 5px;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.5; }
-            50% { opacity: 1; }
-            100% { opacity: 0.5; }
+            gap: 2rem;
         }
     </style>
 </head>
-<body class="custom-scrollbar">
-    <div id="root"></div>
+<body class="font-sans">
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { motion, AnimatePresence } = window.Motion;
-
-        const WHATSAPP_LINK = "https://wa.me/5511999999999";
-
-        // Ícone Helper para evitar erros de renderização do Lucide
-        const Icon = ({ name, className }) => {
-            const LucideIcon = window.lucide[name];
-            return LucideIcon ? <LucideIcon className={className} /> : null;
-        };
-
-        const SERVICES = [
-            { id: 1, title: "Polimento Técnico", description: "Remoção de riscos e oxidação, devolvendo o brilho espelhado.", icon: "Sparkles" },
-            { id: 2, title: "Funilaria Premium", description: "Reparação estética e estrutural com precisão artesanal.", icon: "Hammer" },
-            { id: 3, title: "Pintura Especializada", description: "Cabine de pintura italiana com laboratório de cores.", icon: "Paintbrush" },
-            { id: 4, title: "Martelinho de Ouro", description: "Remoção de amassados mantendo a originalidade da peça.", icon: "Zap" },
-            { id: 5, title: "Detalhamento Interno", description: "Higienização profunda e revitalização de plásticos e couros.", icon: "Wind" },
-            { id: 6, title: "Vitrificação 9H", description: "Proteção cerâmica de alta durabilidade contra raios UV e sujeira.", icon: "ShieldCheck" }
-        ];
-
-        function App() {
-            const [scrolled, setScrolled] = useState(false);
-            const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-            useEffect(() => {
-                const handleScroll = () => setScrolled(window.scrollY > 50);
-                window.addEventListener('scroll', handleScroll);
-                // Inicializa ícones lucide se necessário
-                window.lucide.createIcons();
-                return () => window.removeEventListener('scroll', handleScroll);
-            }, []);
-
-            return (
-                <div className="min-h-screen bg-deep-black">
-                    {/* Navbar */}
-                    <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-deep-black/95 backdrop-blur-lg py-4 border-b border-white/10' : 'bg-transparent py-8'}`}>
-                        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center">
-                                    <Icon name="Car" className="text-white w-6 h-6" />
-                                </div>
-                                <span className="text-2xl font-display font-bold tracking-tighter text-white">
-                                    FRATELLI<span className="text-racing-red">STUDIO</span>
-                                </span>
-                            </div>
-
-                            <div className="hidden md:flex items-center gap-10">
-                                {['Início', 'Serviços', 'Galeria', 'Contato'].map((item) => (
-                                    <a key={item} href={`#${item.toLowerCase()}`} className="text-xs font-bold uppercase tracking-widest hover:text-racing-red transition-colors">
-                                        {item}
-                                    </a>
-                                ))}
-                                <a href={WHATSAPP_LINK} className="bg-racing-red hover:bg-red-700 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all">
-                                    Orçamento
-                                </a>
-                            </div>
-
-                            <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                <Icon name={isMenuOpen ? "X" : "Menu"} className="w-6 h-6" />
-                            </button>
-                        </div>
-                    </nav>
-
-                    {/* Mobile Menu */}
-                    <AnimatePresence>
-                        {isMenuOpen && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-40 bg-deep-black flex flex-col items-center justify-center gap-8 md:hidden">
-                                {['Início', 'Serviços', 'Galeria', 'Contato'].map((item) => (
-                                    <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="text-3xl font-display font-bold">
-                                        {item}
-                                    </a>
-                                ))}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Hero Section */}
-                    <section id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden">
-                        <div className="absolute inset-0 z-0">
-                            <img 
-                                src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=1920" 
-                                className="w-full h-full object-cover opacity-50 animate-slow-zoom"
-                                alt="Carro luxuoso"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-b from-deep-black/20 via-deep-black/60 to-deep-black" />
-                        </div>
-                        
-                        <div className="relative z-10 text-center px-6">
-                            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-                                <span className="inline-block border border-racing-red/50 bg-racing-red/10 text-racing-red px-6 py-2 rounded-full text-xs font-bold uppercase tracking-[0.3em] mb-8">
-                                    Estética Automotiva de Elite
-                                </span>
-                                <h1 className="text-5xl md:text-8xl font-display font-bold mb-8 leading-none shiny-text">
-                                    A ARTE DO <br /> <span className="text-racing-red italic font-black">DETALHAMENTO.</span>
-                                </h1>
-                                <p className="text-metallic-silver max-w-xl mx-auto text-lg mb-10 font-light">
-                                    Transformamos veículos em obras de arte. Tecnologia de ponta e cuidado artesanal para quem exige perfeição.
-                                </p>
-                                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                                    <a href="#servicos" className="bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-racing-red hover:text-white transition-all w-full sm:w-auto">
-                                        Conhecer Serviços
-                                    </a>
-                                    <a href={WHATSAPP_LINK} className="flex items-center gap-3 text-white font-bold uppercase tracking-widest hover:text-racing-red transition-all">
-                                        <div className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center">
-                                            <Icon name="Play" className="w-4 h-4 fill-current" />
-                                        </div>
-                                        Agendar Visita
-                                    </a>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </section>
-
-                    {/* Services Section */}
-                    <section id="servicos" className="py-32 bg-deep-black">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-                                <div>
-                                    <h2 className="text-4xl md:text-6xl font-display font-bold shiny-text">SERVIÇOS</h2>
-                                    <p className="text-racing-red font-bold tracking-[0.2em] mt-2 italic uppercase">Especialidades Fratelli</p>
-                                </div>
-                                <p className="max-w-md text-metallic-silver/60 text-sm">Oferecemos uma gama completa de serviços para manter seu veículo com aspecto de zero quilômetro.</p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {SERVICES.map((s, i) => (
-                                    <motion.div 
-                                        whileHover={{ y: -10 }}
-                                        key={i} 
-                                        className="bg-dark-gray p-10 rounded-3xl border border-white/5 hover:border-racing-red/40 transition-all group"
-                                    >
-                                        <div className="w-14 h-14 bg-deep-black rounded-2xl flex items-center justify-center mb-8 group-hover:bg-racing-red transition-colors duration-500">
-                                            <Icon name={s.icon} className="text-racing-red w-7 h-7 group-hover:text-white" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-racing-red transition-colors">{s.title}</h3>
-                                        <p className="text-metallic-silver/70 leading-relaxed text-sm">{s.description}</p>
-                                    </motion.div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* CTA Section */}
-                    <section id="contato" className="py-20">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <div className="bg-gradient-to-r from-racing-red to-red-900 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-                                <h2 className="text-4xl md:text-6xl font-display font-bold text-white mb-8">SEU CARRO MERECE <br/> O MELHOR TRATAMENTO</h2>
-                                <p className="text-white/80 mb-12 max-w-2xl mx-auto">Solicite um orçamento personalizado agora mesmo via WhatsApp e descubra por que somos referência em estética automotiva.</p>
-                                <a href={WHATSAPP_LINK} className="inline-flex items-center gap-4 bg-white text-racing-red px-12 py-5 rounded-full font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-2xl">
-                                    <Icon name="MessageCircle" className="w-6 h-6" />
-                                    Falar no WhatsApp
-                                </a>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Footer */}
-                    <footer className="py-12 border-t border-white/5">
-                        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div className="flex items-center gap-3">
-                                <Icon name="Car" className="text-racing-red w-6 h-6" />
-                                <span className="text-xl font-display font-bold text-white uppercase tracking-tighter">FRATELLI</span>
-                            </div>
-                            <p className="text-metallic-silver/40 text-xs uppercase tracking-[0.2em]">© 2024 Fratelli Studio Automotivo. Todos os direitos reservados.</p>
-                            <div className="flex gap-6">
-                                <Icon name="Instagram" className="w-5 h-5 hover:text-racing-red cursor-pointer transition-colors" />
-                                <Icon name="Facebook" className="w-5 h-5 hover:text-racing-red cursor-pointer transition-colors" />
-                            </div>
-                        </div>
-                    </footer>
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 py-8">
+        <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center">
+                    <i data-lucide="car" class="text-white w-6 h-6"></i>
                 </div>
-            );
+                <span class="text-2xl font-display font-bold tracking-tighter text-white uppercase">
+                    Fratelli<span class="text-racing-red italic">Studio</span>
+                </span>
+            </div>
+
+            <!-- Menu Desktop -->
+            <div class="hidden md:flex items-center gap-10">
+                <a href="#home" class="text-xs font-bold uppercase tracking-widest hover:text-racing-red transition-colors">Início</a>
+                <a href="#servicos" class="text-xs font-bold uppercase tracking-widest hover:text-racing-red transition-colors">Serviços</a>
+                <a href="#contato" class="text-xs font-bold uppercase tracking-widest hover:text-racing-red transition-colors">Contato</a>
+                <a href="https://wa.me/5511999999999" class="bg-racing-red text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-red-700 transition-all">Orçamento</a>
+            </div>
+
+            <!-- Botão Mobile -->
+            <button class="md:hidden text-white" onclick="toggleMenu()">
+                <i id="menu-icon" data-lucide="menu"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Menu Mobile Overlay -->
+    <div id="mobileMenu" class="mobile-menu">
+        <button class="absolute top-8 right-6 text-white" onclick="toggleMenu()">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+        <a href="#home" onclick="toggleMenu()" class="text-3xl font-display font-bold">Início</a>
+        <a href="#servicos" onclick="toggleMenu()" class="text-3xl font-display font-bold">Serviços</a>
+        <a href="#contato" onclick="toggleMenu()" class="text-3xl font-display font-bold">Contato</a>
+        <a href="https://wa.me/5511999999999" class="bg-racing-red text-white px-10 py-4 rounded-full font-bold uppercase">Orçamento</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=1920" class="w-full h-full object-cover opacity-50 hero-zoom">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-deep-black"></div>
+        </div>
+        
+        <div class="relative z-10 text-center px-6 reveal">
+            <span class="inline-block border border-racing-red/50 bg-racing-red/10 text-racing-red px-6 py-2 rounded-full text-xs font-bold uppercase tracking-[0.3em] mb-8">
+                Estética Automotiva de Elite
+            </span>
+            <h1 class="text-5xl md:text-8xl font-display font-bold mb-8 leading-none shiny-text">
+                PAIXÃO PELA <br> <span class="text-racing-red italic font-black">PERFEIÇÃO.</span>
+            </h1>
+            <p class="text-metallic-silver max-w-xl mx-auto text-lg mb-10">
+                O studio onde seu veículo recebe tratamento de colecionador. Do detalhamento à vitrificação cerâmica.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <a href="#servicos" class="bg-white text-black px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-racing-red hover:text-white transition-all w-full sm:w-auto">
+                    Ver Serviços
+                </a>
+                <a href="https://wa.me/5511999999999" class="flex items-center gap-3 text-white font-bold uppercase tracking-widest hover:text-racing-red transition-all">
+                    <span class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center">
+                        <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                    </span>
+                    Falar Agora
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicos" class="py-32 bg-deep-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-4xl md:text-6xl font-display font-bold shiny-text uppercase">Especialidades</h2>
+                <div class="w-24 h-1 bg-racing-red mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-dark-gray p-10 rounded-3xl border border-white/5 hover:border-racing-red/40 transition-all group reveal">
+                    <div class="w-14 h-14 bg-deep-black rounded-2xl flex items-center justify-center mb-8 group-hover:bg-racing-red transition-colors">
+                        <i data-lucide="sparkles" class="text-racing-red w-7 h-7 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Polimento Técnico</h3>
+                    <p class="text-metallic-silver/70 text-sm leading-relaxed">Remoção de riscos e oxidação, devolvendo o brilho original da pintura com acabamento espelhado.</p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-dark-gray p-10 rounded-3xl border border-white/5 hover:border-racing-red/40 transition-all group reveal">
+                    <div class="w-14 h-14 bg-deep-black rounded-2xl flex items-center justify-center mb-8 group-hover:bg-racing-red transition-colors">
+                        <i data-lucide="shield-check" class="text-racing-red w-7 h-7 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Vitrificação 9H</h3>
+                    <p class="text-metallic-silver/70 text-sm leading-relaxed">Proteção cerâmica de alta resistência contra raios UV, fezes de aves e agentes químicos por anos.</p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-dark-gray p-10 rounded-3xl border border-white/5 hover:border-racing-red/40 transition-all group reveal">
+                    <div class="w-14 h-14 bg-deep-black rounded-2xl flex items-center justify-center mb-8 group-hover:bg-racing-red transition-colors">
+                        <i data-lucide="hammer" class="text-racing-red w-7 h-7 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Martelinho de Ouro</h3>
+                    <p class="text-metallic-silver/70 text-sm leading-relaxed">Reparo de pequenos amassados sem necessidade de pintura, preservando a originalidade do veículo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contato / CTA -->
+    <section id="contato" class="py-20 bg-deep-black">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="bg-gradient-to-r from-racing-red to-red-900 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden reveal">
+                <h2 class="text-4xl md:text-6xl font-display font-bold text-white mb-8 italic">SEU CARRO NO <br> PRÓXIMO NÍVEL</h2>
+                <p class="text-white/80 mb-12 max-w-2xl mx-auto font-light">Agende hoje mesmo uma avaliação técnica e descubra o verdadeiro potencial estético do seu automóvel.</p>
+                <a href="https://wa.me/5511999999999" class="inline-flex items-center gap-4 bg-white text-racing-red px-12 py-5 rounded-full font-black uppercase tracking-widest hover:scale-105 transition-transform shadow-2xl">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i>
+                    Iniciar Atendimento
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-center">
+            <div class="flex items-center gap-3">
+                <i data-lucide="car" class="text-racing-red w-6 h-6"></i>
+                <span class="text-xl font-display font-bold text-white">FRATELLI<span class="text-racing-red">STUDIO</span></span>
+            </div>
+            <p class="text-metallic-silver/40 text-xs uppercase tracking-widest">© 2024 Fratelli Studio Automotivo. Estética de Elite.</p>
+        </div>
+    </footer>
+
+    <!-- Botão WhatsApp Flutuante -->
+    <a href="https://wa.me/5511999999999" class="fixed bottom-8 right-8 bg-whatsapp-green text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform z-50">
+        <i data-lucide="message-circle" class="w-8 h-8 fill-current"></i>
+    </a>
+
+    <!-- Scripts de Interatividade (Vanilla JS) -->
+    <script>
+        // Inicializa os ícones
+        lucide.createIcons();
+
+        // Troca cor da Navbar no Scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/90', 'backdrop-blur-md', 'py-4', 'border-b', 'border-white/10');
+                navbar.classList.remove('py-8');
+            } else {
+                navbar.classList.remove('bg-black/90', 'backdrop-blur-md', 'py-4', 'border-b', 'border-white/10');
+                navbar.classList.add('py-8');
+            }
+            
+            // Ativa animações de revelação
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(reveal => {
+                const windowHeight = window.innerHeight;
+                const revealTop = reveal.getBoundingClientRect().top;
+                if (revealTop < windowHeight - 100) {
+                    reveal.classList.add('active');
+                }
+            });
+        });
+
+        // Menu Mobile Toggle
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const isVisible = menu.style.display === 'flex';
+            menu.style.display = isVisible ? 'none' : 'flex';
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // Disparar animação inicial
+        window.dispatchEvent(new Event('scroll'));
     </script>
 </body>
 </html>
