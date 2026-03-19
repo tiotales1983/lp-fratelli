@@ -5,35 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fratelli Studio Automotivo | Estética de Elite</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     
-    <!-- Tailwind CSS (Play CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- React & Babel -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Framer Motion -->
-    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'racing-red': '#990000',
+                        'racing-red': '#E60000',
                         'metallic-silver': '#BDBDBD',
                         'pure-white': '#FFFFFF',
                         'deep-black': '#000000',
-                        'dark-gray': '#1A1A1A',
+                        'dark-gray': '#0A0A0A',
                         'whatsapp-green': '#25D366',
                     },
                     fontFamily: {
@@ -59,58 +52,42 @@
             background-color: #000000;
             color: #BDBDBD;
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
+            margin: 0;
         }
-
         .shiny-text {
             background: linear-gradient(to bottom, #FFFFFF 0%, #BDBDBD 50%, #FFFFFF 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
         }
-
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #000000;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #990000;
-            border-radius: 10px;
-        }
-
-        html {
-            scroll-behavior: smooth;
+        html { scroll-behavior: smooth; }
+        
+        /* Ajuste para ícones Lucide no React */
+        [data-lucide] {
+            display: inline-block;
+            stroke-width: 2;
         }
     </style>
 </head>
-<body class="custom-scrollbar">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useCallback, useRef } = React;
-        const { motion, AnimatePresence } = window.Motion;
+        const { useState, useEffect } = React;
 
         const WHATSAPP_LINK = "https://wa.me/5511999999999?text=Olá! Gostaria de agendar um serviço no Fratelli Studio.";
 
         const SERVICES = [
-            { id: 1, title: "Polimento Técnico", description: "Remoção de riscos superficiais, oxidação e manchas, devolvendo o brilho original.", icon: "Sparkles", details: "Processo em 3 etapas utilizando compostos importados." },
-            { id: 2, title: "Funilaria (Bodywork)", description: "Reparação de danos estruturais e estéticos na lataria com precisão milimétrica.", icon: "Hammer", details: "Técnicas modernas para garantir o alinhamento perfeito." },
-            { id: 3, title: "Pintura Automotiva", description: "Pintura completa ou localizada com cabine de pintura e secagem controlada.", icon: "Paintbrush", details: "Laboratório próprio de colorimetria para fidelidade da cor." },
-            { id: 4, title: "Martelinho de Ouro", description: "Remoção de pequenos amassados e impactos sem a necessidade de repintura.", icon: "Zap", details: "Ideal para danos causados por granizo ou pequenas batidas." },
-            { id: 5, title: "Detalhamento (Detailing)", description: "Limpeza minuciosa de cada detalhe do veículo, interna e externamente.", icon: "Search", details: "Foco em áreas críticas como emblemas e motor." },
-            { id: 6, title: "Higienização Interna", description: "Limpeza profunda de bancos e carpetes com eliminação de bactérias.", icon: "Wind", details: "Utilização de produtos bactericidas de pH neutro." },
-            { id: 7, title: "Lavagem Detalhada", description: "Limpeza externa técnica que evita riscos na pintura.", icon: "Droplets", details: "Método de dois baldes e snow foam premium." },
-            { id: 8, title: "Vitrificação Cerâmica", description: "Proteção de longo prazo contra raios UV e agentes químicos.", icon: "ShieldCheck", details: "Aplicação de revestimentos 9H ultra-hidrofóbicos." },
-            { id: 9, title: "Proteção de Chassis", description: "Limpeza e aplicação de verniz de proteção na parte inferior.", icon: "Layers", details: "Previne a corrosão e mantém o aspecto de novo." },
-            { id: 10, title: "Restauração de Faróis", description: "Recuperação da transparência e proteção contra amarelamento.", icon: "Car", details: "Lixamento técnico e aplicação de selante cerâmico." }
+            { id: 1, title: "Polimento Técnico", description: "Remoção de riscos e oxidação, devolvendo o brilho original.", icon: "sparkles" },
+            { id: 2, title: "Funilaria (Bodywork)", description: "Reparação de danos com precisão milimétrica.", icon: "hammer" },
+            { id: 3, title: "Pintura Automotiva", description: "Cabine de pintura com secagem controlada.", icon: "paintbrush" },
+            { id: 4, title: "Martelinho de Ouro", description: "Remoção de amassados sem repintura.", icon: "zap" },
+            { id: 5, title: "Detalhamento", description: "Limpeza minuciosa de cada detalhe do veículo.", icon: "search" },
+            { id: 8, title: "Vitrificação Cerâmica", description: "Proteção 9H contra raios UV e agentes químicos.", icon: "shield-check" }
         ];
 
-        const Icon = ({ name, className }) => {
-            const IconComponent = lucide[name];
-            return IconComponent ? <IconComponent className={className} /> : null;
-        };
+        const Icon = ({ name, className }) => (
+            <i data-lucide={name} className={className}></i>
+        );
 
         function App() {
             const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -119,227 +96,103 @@
             useEffect(() => {
                 const handleScroll = () => setScrolled(window.scrollY > 50);
                 window.addEventListener('scroll', handleScroll);
+                // Inicializa ícones
+                lucide.createIcons();
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
-            const navLinks = [
-                { name: 'Início', href: '#home' },
-                { name: 'Serviços', href: '#services' },
-                { name: 'Diferenciais', href: '#features' },
-                { name: 'Galeria', href: '#gallery' },
-                { name: 'Depoimentos', href: '#testimonials' },
-                { name: 'Contato', href: '#contact' },
-            ];
+            // Re-inicializa ícones quando o menu ou DOM muda
+            useEffect(() => { lucide.createIcons(); });
 
             return (
-                <div className="min-h-screen bg-deep-black selection:bg-racing-red selection:text-white">
+                <div className="min-h-screen bg-deep-black">
                     {/* Navbar */}
-                    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-deep-black/90 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-6'}`}>
+                    <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-black/90 backdrop-blur-md py-4 border-b border-white/10' : 'bg-transparent py-6'}`}>
                         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                                <div className="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center rotate-3">
-                                    <Icon name="Car" className="text-white w-6 h-6 -rotate-3" />
+                                <div className="w-10 h-10 bg-racing-red rounded-lg flex items-center justify-center">
+                                    <Icon name="car" className="text-white w-6 h-6" />
                                 </div>
-                                <span className="text-2xl font-display font-bold tracking-tighter text-pure-white">
+                                <span className="text-2xl font-display font-bold tracking-tighter text-pure-white uppercase">
                                     FRATELLI<span className="text-racing-red italic">STUDIO</span>
                                 </span>
                             </div>
 
                             <div className="hidden md:flex items-center gap-8">
-                                {navLinks.map((link) => (
-                                    <a key={link.name} href={link.href} className="text-sm font-medium hover:text-racing-red transition-colors uppercase tracking-widest">
-                                        {link.name}
+                                {['Início', 'Serviços', 'Contato'].map((item) => (
+                                    <a key={item} href={`#${item.toLowerCase()}`} className="text-xs font-bold uppercase tracking-widest hover:text-racing-red transition-colors text-pure-white">
+                                        {item}
                                     </a>
                                 ))}
                             </div>
 
                             <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                                <Icon name={isMenuOpen ? "X" : "Menu"} className="w-6 h-6" />
+                                <Icon name={isMenuOpen ? "x" : "menu"} className="w-6 h-6" />
                             </button>
                         </div>
                     </nav>
 
-                    {/* Mobile Menu */}
-                    <AnimatePresence>
-                        {isMenuOpen && (
-                            <motion.div 
-                                initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-                                className="fixed inset-0 z-40 bg-deep-black pt-24 px-6 md:hidden"
-                            >
-                                <div className="flex flex-col gap-6">
-                                    {navLinks.map((link) => (
-                                        <a key={link.name} href={link.href} onClick={() => setIsMenuOpen(false)} className="text-2xl font-display font-bold hover:text-racing-red transition-colors">
-                                            {link.name}
-                                        </a>
-                                    ))}
-                                    <a href={WHATSAPP_LINK} className="bg-whatsapp-green text-white w-full py-4 rounded-xl text-lg font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-2">
-                                        <Icon name="MessageCircle" className="w-6 h-6" /> Agendar Agora
-                                    </a>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-
-                    {/* Hero Section */}
-                    <section id="home" className="relative h-screen flex items-center overflow-hidden">
+                    {/* Hero */}
+                    <section id="inicio" className="relative h-screen flex items-center justify-center overflow-hidden">
                         <div className="absolute inset-0 z-0">
-                            <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=1920" className="w-full h-full object-cover opacity-40 scale-105 animate-slow-zoom" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black/50" />
+                            <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&q=80&w=1920" 
+                                 className="w-full h-full object-cover opacity-40 animate-slow-zoom" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-deep-black via-transparent to-deep-black" />
                         </div>
-                        <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-                            <motion.div initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className="max-w-2xl">
-                                <span className="inline-block bg-racing-red/20 text-racing-red px-4 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-6 border border-racing-red/30">Estética Automotiva de Elite</span>
-                                <h1 className="text-6xl md:text-8xl font-display font-bold leading-[0.9] mb-8 shiny-text">PAIXÃO POR <br /> <span className="text-racing-red italic">PERFEIÇÃO.</span></h1>
-                                <p className="text-lg text-metallic-silver mb-10 leading-relaxed max-w-lg">Elevamos o padrão da estética automotiva. Da funilaria artesanal à vitrificação cerâmica de alta performance.</p>
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    <a href="#services" className="bg-racing-red text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:shadow-[0_0_30px_rgba(153,0,0,0.5)] transition-all group flex items-center justify-center gap-2">
-                                        Nossos Serviços <Icon name="ChevronRight" className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </a>
-                                </div>
-                            </motion.div>
-                        </div>
-                    </section>
-
-                    {/* Features */}
-                    <section id="features" className="py-24 bg-dark-gray">
-                        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
-                            {[
-                                { icon: "Shield", title: "Qualidade Premium", desc: "Produtos do mercado mundial garantindo resultados duradouros." },
-                                { icon: "Award", title: "Mão de Obra Expert", desc: "Equipe certificada nas mais modernas técnicas." },
-                                { icon: "Clock", title: "Entrega Pontual", desc: "Processos otimizados para garantir o prazo combinado." }
-                            ].map((f, i) => (
-                                <div key={i} className="flex flex-col items-center text-center group">
-                                    <div className="w-20 h-20 rounded-2xl bg-deep-black flex items-center justify-center mb-6 group-hover:bg-racing-red transition-colors duration-500">
-                                        <Icon name={f.icon} className="w-10 h-10 text-racing-red group-hover:text-white transition-colors" />
-                                    </div>
-                                    <h3 className="text-xl font-bold mb-4 uppercase tracking-wider shiny-text">{f.title}</h3>
-                                    <p className="text-metallic-silver text-sm leading-relaxed">{f.desc}</p>
-                                </div>
-                            ))}
+                        
+                        <div className="relative z-10 text-center px-6">
+                            <span className="inline-block border border-racing-red/50 text-racing-red px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.3em] mb-4 bg-racing-red/10">Estética Automotiva de Elite</span>
+                            <h1 className="text-6xl md:text-8xl font-display font-bold leading-none mb-8 shiny-text uppercase">
+                                PAIXÃO POR <br /> <span className="text-racing-red italic">PERFEIÇÃO.</span>
+                            </h1>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href={WHATSAPP_LINK} className="bg-racing-red text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:scale-105 transition-transform">
+                                    Agendar Agora
+                                </a>
+                            </div>
                         </div>
                     </section>
 
-                    {/* Services */}
-                    <section id="services" className="py-32 bg-deep-black">
+                    {/* Serviços */}
+                    <section id="servicos" className="py-24 bg-dark-gray">
                         <div className="max-w-7xl mx-auto px-6">
-                            <h2 className="text-5xl md:text-6xl font-display font-bold mb-20 shiny-text text-center">SERVIÇOS <span className="text-racing-red italic">ESPECIALIZADOS</span></h2>
+                            <div className="text-center mb-16">
+                                <h2 className="text-4xl md:text-5xl font-display font-bold text-pure-white mb-4 uppercase">Serviços <span className="text-racing-red italic">Especiais</span></h2>
+                                <div className="w-20 h-1 bg-racing-red mx-auto"></div>
+                            </div>
+                            
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                {SERVICES.map((s, i) => (
-                                    <div key={s.id} className="bg-dark-gray p-8 rounded-3xl border border-white/5 hover:border-racing-red/30 transition-all group">
-                                        <div className="text-racing-red mb-6 group-hover:scale-110 transition-transform"><Icon name={s.icon} className="w-8 h-8" /></div>
-                                        <h3 className="text-2xl font-bold mb-4 group-hover:text-racing-red transition-colors shiny-text">{s.title}</h3>
-                                        <p className="text-metallic-silver text-sm mb-6 leading-relaxed">{s.description}</p>
-                                        <div className="pt-6 border-t border-white/5">
-                                            <p className="text-[10px] uppercase tracking-widest font-bold text-white/40 mb-2">Detalhes</p>
-                                            <p className="text-xs text-metallic-silver italic">{s.details}</p>
-                                        </div>
+                                {SERVICES.map((s) => (
+                                    <div key={s.id} className="group bg-deep-black p-8 rounded-2xl border border-white/5 hover:border-racing-red/30 transition-all">
+                                        <div className="text-racing-red mb-6"><Icon name={s.icon} className="w-10 h-10" /></div>
+                                        <h3 className="text-xl font-bold text-pure-white mb-3 uppercase tracking-tight">{s.title}</h3>
+                                        <p className="text-sm leading-relaxed opacity-70">{s.description}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* Gallery */}
-                    <section id="gallery" className="py-32 bg-dark-gray">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <h2 className="text-5xl font-display font-bold mb-20 text-center shiny-text">NOSSA <span className="text-racing-red italic">GALERIA</span></h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {[
-                                    "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&q=80&w=800",
-                                    "https://images.unsplash.com/photo-1603584173870-7f3118941582?auto=format&fit=crop&q=80&w=800",
-                                    "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=80&w=800",
-                                    "https://images.unsplash.com/photo-1542362567-b055002b91f4?auto=format&fit=crop&q=80&w=800",
-                                    "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=800",
-                                    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800"
-                                ].map((img, i) => (
-                                    <div key={i} className="relative aspect-square overflow-hidden rounded-2xl group cursor-pointer">
-                                        <img src={img} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                                        <div className="absolute inset-0 bg-racing-red/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                            <Icon name="Search" className="text-white w-8 h-8" />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Testimonials */}
-                    <section id="testimonials" className="py-32 bg-deep-black">
-                        <div className="max-w-7xl mx-auto px-6">
-                            <h2 className="text-5xl font-display font-bold text-center mb-20 shiny-text">O QUE DIZEM <span className="text-racing-red italic">NOSSOS CLIENTES</span></h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {[
-                                    { name: "Ricardo Silva", car: "BMW M3", text: "O trabalho de vitrificação ficou impecável." },
-                                    { name: "Ana Paula", car: "Porsche Macan", text: "Reparo de funilaria e pintura perfeito." },
-                                    { name: "Marcos Oliveira", car: "Audi RS6", text: "Atendimento diferenciado e resultado final superior." }
-                                ].map((t, i) => (
-                                    <div key={i} className="bg-dark-gray p-10 rounded-3xl relative">
-                                        <Icon name="Star" className="text-racing-red w-8 h-8 absolute -top-4 -left-4 fill-racing-red" />
-                                        <p className="text-metallic-silver italic mb-8 leading-relaxed">"{t.text}"</p>
-                                        <h4 className="font-bold text-lg text-pure-white">{t.name}</h4>
-                                        <p className="text-racing-red text-sm font-medium">{t.car}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Contact */}
-                    <section id="contact" className="py-32 bg-dark-gray">
-                        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20">
-                            <div>
-                                <h2 className="text-5xl font-display font-bold mb-8 shiny-text">VAMOS <span className="text-racing-red italic">CONVERSAR?</span></h2>
-                                <p className="text-metallic-silver mb-12 leading-relaxed">Estamos prontos para transformar o seu veículo. Entre em contato via WhatsApp.</p>
-                                <div className="space-y-8">
-                                    {[
-                                        { icon: "Phone", label: "WhatsApp", val: "(11) 99999-9999" },
-                                        { icon: "Mail", label: "E-mail", val: "contato@fratellistudio.com" },
-                                        { icon: "MapPin", label: "Endereço", val: "Av. Automotiva, 1234 - SP" }
-                                    ].map((c, i) => (
-                                        <div key={i} className="flex items-center gap-6 group">
-                                            <div className="w-14 h-14 rounded-full bg-deep-black flex items-center justify-center group-hover:bg-racing-red transition-colors">
-                                                <Icon name={c.icon} className="text-racing-red group-hover:text-white" />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs uppercase tracking-widest text-white/40 font-bold mb-1">{c.label}</p>
-                                                <p className="text-xl font-bold text-pure-white">{c.val}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="flex flex-col justify-center">
-                                <div className="bg-deep-black p-12 rounded-3xl border border-white/5 text-center relative overflow-hidden group">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-racing-red" />
-                                    <Icon name="MessageCircle" className="w-16 h-16 text-whatsapp-green mx-auto mb-8 group-hover:scale-110 transition-transform" />
-                                    <h3 className="text-3xl font-display font-bold mb-6 uppercase tracking-tight shiny-text">Atendimento Imediato</h3>
-                                    <a href={WHATSAPP_LINK} target="_blank" className="inline-flex items-center gap-3 bg-whatsapp-green text-white px-12 py-5 rounded-full font-bold uppercase tracking-widest hover:shadow-[0_0_40px_rgba(37,211,102,0.4)] transition-all hover:scale-105">
-                                        <Icon name="MessageCircle" className="w-6 h-6" /> Iniciar Conversa
-                                    </a>
-                                </div>
-                            </div>
+                    {/* Contato CTA */}
+                    <section id="contato" className="py-20 bg-deep-black border-t border-white/5">
+                        <div className="max-w-3xl mx-auto text-center px-6">
+                            <h2 className="text-3xl font-display font-bold text-pure-white mb-6 uppercase">Pronto para elevar o nível do seu carro?</h2>
+                            <p className="mb-10 opacity-60">Atendimento personalizado via WhatsApp com especialistas em estética.</p>
+                            <a href={WHATSAPP_LINK} className="inline-flex items-center gap-3 bg-whatsapp-green text-white px-12 py-5 rounded-full font-bold uppercase tracking-widest hover:shadow-[0_0_30px_rgba(37,211,102,0.3)] transition-all">
+                                <Icon name="message-circle" className="w-6 h-6" /> Chamar no WhatsApp
+                            </a>
                         </div>
                     </section>
 
                     {/* Footer */}
-                    <footer className="py-12 bg-deep-black border-t border-white/5">
-                        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div className="flex items-center gap-2">
-                                <Icon name="Car" className="text-racing-red w-6 h-6" />
-                                <span className="text-xl font-display font-bold tracking-tighter text-pure-white">FRATELLI<span className="text-racing-red italic">STUDIO</span></span>
-                            </div>
-                            <p className="text-white/40 text-xs uppercase tracking-widest">© 2026 Fratelli Studio Automotivo.</p>
-                        </div>
+                    <footer className="py-10 text-center border-t border-white/5 opacity-40 text-[10px] uppercase tracking-widest">
+                        © 2026 Fratelli Studio Automotivo. Todos os direitos reservados.
                     </footer>
 
-                    {/* Floating WhatsApp */}
-                    <motion.a 
-                        href={WHATSAPP_LINK} target="_blank"
-                        initial={{ scale: 0 }} animate={{ scale: 1 }} whileHover={{ scale: 1.1 }}
-                        className="fixed bottom-8 right-8 z-50 bg-whatsapp-green text-white p-4 rounded-full shadow-2xl flex items-center justify-center"
-                    >
-                        <Icon name="MessageCircle" className="w-8 h-8 fill-white text-whatsapp-green" />
-                    </motion.a>
+                    {/* Botão Flutuante */}
+                    <a href={WHATSAPP_LINK} className="fixed bottom-6 right-6 bg-whatsapp-green p-4 rounded-full shadow-2xl z-50 hover:scale-110 transition-transform">
+                        <Icon name="message-circle" className="text-white w-7 h-7" />
+                    </a>
                 </div>
             );
         }
